@@ -74,7 +74,7 @@ def password_validator(length: int = 8, uppercase: int = 1, lowercase: int = 1, 
         Декорированная функция.
     """
     def decorator(func: Callable) -> Callable:
-        def wrapper(password: str):
+        def wrapper(username: str, password: str):
             if len(password) < length:
                 raise ValueError(f"Пароль слишком короткий. Минимум {length} символов.")
             if sum(1 for c in password if c.isupper()) < uppercase:
@@ -83,7 +83,7 @@ def password_validator(length: int = 8, uppercase: int = 1, lowercase: int = 1, 
                 raise ValueError(f"Пароль должен содержать минимум {lowercase} строчных букв.")
             if sum(1 for c in password if c in spec_symbols) < special_chars:
                 raise ValueError(f"Пароль должен содержать минимум {special_chars} специальных символов.")
-            return func(password)
+            return func(username, password)
         return wrapper
     return decorator
 
@@ -98,10 +98,10 @@ def username_validator(func: Callable) -> Callable:
     Returns:
         Декорированная функция.
     """
-    def wrapper(username: str):
+    def wrapper(username: str, password: str):
         if " " in username:
             raise ValueError("Имя пользователя не должно содержать пробелы.")
-        return func(username)
+        return func(username, password)
     return wrapper
 
 
@@ -122,3 +122,13 @@ def register_user(username: str, password: str):
         writer = csv.writer(csvfile)
         writer.writerow([username, password])
         print(f"Пользователь {username} успешно зарегистрирован.")
+
+
+username: str = input("Введите имя пользователя: ")
+password: str = input("Введите пароль: ")
+
+try:
+    register_user(username, password)
+    print("Регистрация прошла успешно!")
+except ValueError as e:
+    print(f"Ошибка: {e}")
