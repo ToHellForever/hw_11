@@ -86,3 +86,20 @@ def password_validator(length: int = 8, uppercase: int = 1, lowercase: int = 1, 
             return func(password)
         return wrapper
     return decorator
+
+
+def username_validator(func: Callable) -> Callable:
+    """
+    Декоратор для валидации имени пользователя.
+
+    Args:
+        func: Функция, которую нужно декорировать.
+
+    Returns:
+        Декорированная функция.
+    """
+    def wrapper(username: str):
+        if " " in username:
+            raise ValueError("Имя пользователя не должно содержать пробелы.")
+        return func(username)
+    return wrapper
