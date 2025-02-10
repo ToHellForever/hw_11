@@ -103,3 +103,22 @@ def username_validator(func: Callable) -> Callable:
             raise ValueError("Имя пользователя не должно содержать пробелы.")
         return func(username)
     return wrapper
+
+
+@password_validator(length=8, uppercase=1, lowercase=1, special_chars=1)
+@username_validator
+def register_user(username: str, password: str):
+    """
+    Функция для регистрации нового пользователя.
+
+    Args:
+        username: Имя пользователя.
+        password: Пароль пользователя.
+
+    Raises:
+        ValueError: Если пароль или юзернейм не соответствует заданным условиям.
+    """
+    with open("users.csv", "a", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([username, password])
+        print(f"Пользователь {username} успешно зарегистрирован.")
